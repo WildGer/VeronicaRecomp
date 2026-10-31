@@ -1,7 +1,10 @@
 #pragma once
 
+#include <cstddef>
 #include <filesystem>
 #include <functional>
+#include <string>
+#include <utility>
 
 #include <rex/ui/imgui_dialog.h>
 
