@@ -14,6 +14,7 @@ include(generated/rexglue.cmake)
 set(VERONICARECOMP_SOURCES
     src/main.cpp
     src/veronicarecomp_settings.cpp
+    src/ui/veronica_settings_menu.cpp
 )
 
 if(WIN32)
