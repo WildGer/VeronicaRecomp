@@ -1,7 +1,9 @@
 #include "veronica_settings_menu.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <exception>
+#include <iterator>
 #include <string>
 #include <utility>
 
