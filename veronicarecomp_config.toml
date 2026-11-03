@@ -1,5 +1,15 @@
 # VeronicaRecomp Functions
 
+# Keep these PowerPC registers in C++ locals instead of the shared context
+# struct, so the host compiler can hold them in registers. They are
+# caller-saved or reserved, so callers never see the difference.
+# non_argument_as_local, non_volatile_as_local and skip_lr stay off: they can
+# break __savegprlr helpers and setjmp/longjmp.
+ctr_as_local = true
+xer_as_local = true
+reserved_as_local = true
+cr_as_local = true
+
 [functions]
 # Initial boot
 0x827E9A60 = {}

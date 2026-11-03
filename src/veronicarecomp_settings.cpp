@@ -36,11 +36,14 @@ namespace CodeVeronica {
                 curWindow->SetFullscreen(true);
             }
         }
-        InitializeSettingsList("required", _requiredSettings);
-
         //Initializes default vlaues and saves .toml when one isn't found, or if version number differs!
         std::string cfgVersion = rex::cvar::GetFlagByName("veronicarecomp_app_version");
-        if(!std::filesystem::is_regular_file(paths.config_path) || cfgVersion.empty() || cfgVersion != _version ) { 
+        const bool bVersionChanged = cfgVersion.empty() || cfgVersion != _version;
+
+        //Required settings override values saved by an older version, since those were written to the .toml.
+        InitializeSettingsList("required", _requiredSettings, bVersionChanged);
+
+        if(!std::filesystem::is_regular_file(paths.config_path) || bVersionChanged ) { 
             InitializeSettingsList("default", _defaultConfig);
             rex::cvar::SetFlagByName("veronicarecomp_app_version", _version); //Set version
             rex::cvar::SaveConfig(paths.config_path);
@@ -48,15 +51,15 @@ namespace CodeVeronica {
     }
 
     //Initializes CVars based on provided settings.
-    void VeronicaRecompSettings::InitializeSettingsList(std::string name, std::vector<ConfigSetting> settings){
+    void VeronicaRecompSettings::InitializeSettingsList(std::string name, std::vector<ConfigSetting> settings, bool force){
         REXLOG_INFO("Initializing {} settings...", name);
         for (const auto& [k, v] : settings) {
-            if ( !rex::cvar::HasNonDefaultValue(k) ){
+            if ( force || !rex::cvar::HasNonDefaultValue(k) ){
                 bool bSuccess = rex::cvar::SetFlagByName(k, v);
                 if(bSuccess){
-                    REXLOG_INFO("[condemned2_settings] {}: {}", k, v );
+                    REXLOG_INFO("[veronicarecomp_settings] {}: {}", k, v );
                 }else{
-                    REXLOG_ERROR("[condemned2_settings] Failing to set {}: {}", k, v );
+                    REXLOG_ERROR("[veronicarecomp_settings] Failing to set {}: {}", k, v );
                 }
             }
         }
