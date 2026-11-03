@@ -50,6 +50,33 @@ namespace CodeVeronica {
         }
     }
 
+    //Copies the shader storage shipped next to the EXE (ShaderCache folder) into the cache folder, so pipelines
+    //are created at startup instead of the first time each one is drawn. The storage files only hold guest
+    //shaders and pipeline descriptions, so they work on any GPU. A bigger local file has already grown past the seed.
+    void VeronicaRecompSettings::SeedShaderCache(const rex::PathConfig& paths) {
+        const auto seed_dir = paths.config_path.parent_path() / "ShaderCache";
+        std::error_code ec;
+        if (paths.cache_root.empty() || !std::filesystem::is_directory(seed_dir, ec)) {
+            return;
+        }
+        const auto dest_dir = paths.cache_root / "shaders" / "shareable";
+        std::filesystem::create_directories(dest_dir, ec);
+        for (const auto& entry : std::filesystem::directory_iterator(seed_dir, ec)) {
+            if (!entry.is_regular_file(ec)) {
+                continue;
+            }
+            const auto dest = dest_dir / entry.path().filename();
+            if (std::filesystem::exists(dest, ec) && std::filesystem::file_size(dest, ec) >= entry.file_size(ec)) {
+                continue;
+            }
+            if (std::filesystem::copy_file(entry.path(), dest, std::filesystem::copy_options::overwrite_existing, ec)) {
+                REXLOG_INFO("[veronicarecomp_settings] Seeded shader cache: {}", entry.path().filename().string());
+            } else {
+                REXLOG_ERROR("[veronicarecomp_settings] Failing to seed shader cache {}: {}", entry.path().filename().string(), ec.message());
+            }
+        }
+    }
+
     //Initializes CVars based on provided settings.
     void VeronicaRecompSettings::InitializeSettingsList(std::string name, std::vector<ConfigSetting> settings, bool force){
         REXLOG_INFO("Initializing {} settings...", name);

@@ -23,6 +23,7 @@ namespace CodeVeronica {
             static void SetDefaultPaths(rex::PathConfig& paths);
             static void InitializeSettings(const rex::PathConfig& paths, rex::ui::Window *curWindow);
             static void InitializeSettingsList(std::string name, std::vector<ConfigSetting> settings, bool force = false);
+            static void SeedShaderCache(const rex::PathConfig& paths);
 
         private:
             inline static const std::string _title = "Resident Evil CODE:Veronica"; // Window title
