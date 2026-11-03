@@ -14,6 +14,7 @@ include(generated/rexglue.cmake)
 set(VERONICARECOMP_SOURCES
     src/main.cpp
     src/veronicarecomp_settings.cpp
+    src/veronicarecomp_ring_backoff.cpp
 )
 
 if(WIN32)

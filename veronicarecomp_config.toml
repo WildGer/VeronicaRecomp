@@ -10,6 +10,14 @@ xer_as_local = true
 reserved_as_local = true
 cr_as_local = true
 
+# The render thread waits for free space in the GPU command ring in
+# sub_82992B58, spinning on the read pointer. 0x82992BE8 is the retry path,
+# right before sub_8297F940 runs the guest's spin hints and 5 s watchdog. The
+# hook only waits, so guest control flow stays intact.
+[[midasm_hook]]
+address = 0x82992BE8
+name = "veronicarecomp_command_ring_backoff"
+
 [functions]
 # Initial boot
 0x827E9A60 = {}

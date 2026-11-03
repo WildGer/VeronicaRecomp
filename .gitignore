@@ -7,3 +7,4 @@ assets/*
 !assets/fonts/
 out/*
 generated/default/*
+*.pdb
