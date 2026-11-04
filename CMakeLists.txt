@@ -15,6 +15,7 @@ set(VERONICARECOMP_SOURCES
     src/main.cpp
     src/veronicarecomp_settings.cpp
     src/veronicarecomp_ring_backoff.cpp
+    src/veronicarecomp_live_signin.cpp
 )
 
 if(WIN32)
